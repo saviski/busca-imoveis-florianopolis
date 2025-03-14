@@ -110,3 +110,7 @@ O projeto evoluiu em várias etapas, detalhadas abaixo com base nos prompts forn
 - **Sistema de Abas**: Implementação de abas para "Listagem" e "Mapa", com busca unificada.
 - **Galeria de Imagens**: Inclusão da aba "Imagens" com thumbnails e títulos sticky.
 - **Finalização**: Separação do código em arquivos e geração de um README.
+
+### Créditos
+
+Desenvolvido inteiramente no Grok (xAI). Veja o processo detalhado: [Conversa no Grok](https://grok.com/share/bGVnYWN5_41982680-4854-4db8-99f7-2fe317f0ee90).
