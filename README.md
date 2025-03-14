@@ -93,6 +93,15 @@ O projeto evoluiu em várias etapas, detalhadas abaixo com base nos prompts forn
 - **Prompt**: "faça a pagina que lista todas as imagens ser uma aba"
   - Integração da galeria como aba "Imagens", unificando tudo em um único arquivo com três abas.
 
+### Etapa 8: Mini Mapa no Dialog
+
+- **Prompt**: "mais uma coisa antes de finalizar, no dialog que é exibido quando se clica no card junto das fotos exibir um mapa com a localizacao do imovel o mapa deve ser pequeno, como se fosse mais uma imagem na listagem de imagens, deve aparecer por primeiro"
+  - Adicionei um mini mapa (300x200px) no dialog, exibido antes das imagens, usando Leaflet com coordenadas `lat` e `lon`.
+- **Prompt**: "o script dentro de loadImageGallery não esta sendo executado pois é adicionado ao innerhtml"
+  - Corrigi o carregamento do mapa movendo a lógica de inicialização para fora do `innerHTML`, usando `setTimeout` após o dialog ser exibido.
+- **Prompt**: "faça esse mini mapa ter display: inline-block; tamano de 600x290px o logo do leaflet e openstreetmap dentro do mapa estao ocupando muito espaco, tem como fazer eles ficarem menos visiveis? o script do mapa ainda não esta sendo executado, o mapa não é carregado dentro do dialog"
+  - Ajustei o mapa para 600x290px com `display: inline-block`, reduzi a visibilidade da atribuição do OpenStreetMap (fonte 8px, opacidade 0.5), e corrigi o carregamento com um `setTimeout` mais robusto após `showModal()`.
+
 ### Etapas do Processo
 
 - **Estrutura Básica**: Criação de uma listagem com busca e suporte a HTML na descrição.
