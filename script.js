@@ -28,13 +28,21 @@ fetch('sorted.json', {
 
     const dialog = document.getElementById('galleryDialog');
 
-    // Função para carregar galeria de imagens no dialog
+    // Função para carregar galeria de imagens com mapa no dialog
     const loadImageGallery = (index) => {
       const result = filteredListings[index];
       if (!result) {
         console.error('No result found for index:', index);
         return '<p>Erro: Imóvel não encontrado.</p>';
       }
+
+      // Preparar o HTML com um container para o mapa
+      const lat = result.lat || result.latitude;
+      const lon = result.lon || result.longitude;
+      let mapHtml = lat && lon
+        ? `<div id="dialog-map-${index}" class="dialog-map"></div>`
+        : '<p>Localização não disponível.</p>';
+
       const allImages = result.imageUrls && result.imageUrls.length > 0
         ? result.imageUrls.map((url, idx) => {
           if (url.includes('youtube.com') || url.includes('youtu.be')) {
@@ -45,15 +53,57 @@ fetch('sorted.json', {
           }
         }).join('')
         : '<p>Sem imagens disponíveis.</p>';
-      return `
+
+      const htmlContent = `
             <div class="gallery-content">
                 <button class="close-btn" onclick="document.getElementById('galleryDialog').close()">Fechar</button>
+                ${mapHtml}
                 ${allImages}
             </div>
         `;
+
+      // Definir o conteúdo do dialog
+      dialog.innerHTML = htmlContent;
+
+      // Inicializar o mapa após o dialog ser exibido
+      if (lat && lon) {
+        setTimeout(() => {
+          const mapElement = document.getElementById(`dialog-map-${index}`);
+          if (mapElement && !mapElement.hasAttribute('data-initialized')) {
+            const map = L.map(mapElement, {
+              zoomControl: false,
+              dragging: false,
+              scrollWheelZoom: false,
+              doubleClickZoom: false,
+              attributionControl: true // Manter o controle de atribuição
+            }).setView([lat, lon], 15);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+              attribution: '© <a href="https://www.openstreetmap.org/copyright">OSM</a>',
+              minZoom: 15,
+              maxZoom: 18
+            }).addTo(map);
+
+            L.marker([lat, lon]).addTo(map);
+
+            // Reduzir a visibilidade da atribuição
+            const attribution = mapElement.querySelector('.leaflet-control-attribution');
+            if (attribution) {
+              attribution.style.fontSize = '8px';
+              attribution.style.opacity = '0.5';
+              attribution.style.background = 'rgba(255, 255, 255, 0.7)';
+              attribution.style.padding = '2px';
+            }
+
+            mapElement.setAttribute('data-initialized', 'true');
+          }
+        }, 50); // Pequeno atraso para garantir que o DOM esteja pronto
+      }
+
+      return htmlContent; // Retornar para consistência, mas não é necessário aqui
     };
 
-    // Função para carregar galeria completa no dialog
+    // Função para carregar galeria completa no dialog (quando clicado no mapa)
     const loadFullGallery = (index) => {
       const result = filteredListings[index];
       if (!result) {
@@ -193,7 +243,7 @@ fetch('sorted.json', {
       });
     });
 
-    // Configurar mapa
+    // Configurar mapa principal
     const map = L.map('map', {
       center: [-23.5505, -46.6333],
       zoom: 10,
@@ -306,8 +356,8 @@ fetch('sorted.json', {
     document.getElementById('listingContainer').addEventListener('click', (e) => {
       if (e.target.classList.contains('listing-img')) {
         const index = parseInt(e.target.getAttribute('data-index'));
-        dialog.innerHTML = loadImageGallery(index);
-        dialog.showModal();
+        loadImageGallery(index); // Carrega o conteúdo
+        dialog.showModal(); // Exibe o dialog e o mapa é inicializado
       }
     });
 

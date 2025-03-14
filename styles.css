@@ -313,3 +313,11 @@ body {
   margin-right: 5px;
   border-radius: 50%;
 }
+
+.dialog-map {
+  display: inline-block;
+  width: 600px;
+  height: 290px;
+  margin: 10px 0;
+  border-radius: 5px;
+}
