@@ -42,7 +42,7 @@ O projeto evoluiu em várias etapas, detalhadas abaixo com base nos prompts forn
 - **Prompt**: "ok now i have a lot of options, can you help me select some houses based on my preferences"
   - Solicitei preferências detalhadas do usuário para filtrar os resultados.
 - **Prompt**: "eu morava em uma casa na barra da lagoa..."
-  - Baseado nas preferências (e.g., 3 quartos, área verde, até 2M, sem norte da ilha), sugeri filtrar os 1000 elementos do JSON.
+  - Baseado nas preferências (e.g., 3 quartos, área verde, sem norte da ilha), sugeri filtrar os 1000 elementos do JSON.
 - **Prompt**: "i have filtered the results, help me pretty print the results as a new webpage"
   - Criei um script para gerar uma página HTML via Blob URL, exibindo cards com imagens (`crop/614x297`), links para Zap Imóveis e detalhes (preço, quartos, etc.).
 
