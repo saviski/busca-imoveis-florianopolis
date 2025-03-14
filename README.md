@@ -22,30 +22,72 @@ O objetivo foi construir uma interface funcional para exibir dados de imóveis a
 
 ## Desenvolvimento no Grok
 
-O projeto foi criado em etapas, com prompts que guiaram o Grok desde a concepção até a conclusão:
+O projeto evoluiu em várias etapas, detalhadas abaixo com base nos prompts fornecidos:
 
-1. **Prompt Inicial**: "Crie uma listagem simples de imóveis com busca."
+### Etapa 1: Entendendo a API e Configuração Inicial
 
-   - Resultado: Uma página básica com cards e busca funcional.
+- **Prompt**: "explain this api url"
+  - Expliquei a URL da API do Zap Imóveis, detalhando parâmetros como `user`, `includeFields`, filtros (e.g., `bedrooms=3,2,4`, `priceMax=2000000`) e paginação (`size=15`).
+- **Prompt**: "can you explain the response"
+  - Descrevi a estrutura da resposta JSON, com `search.result.listings` contendo dados dos imóveis (e.g., `title`, `description`, `imageUrls`).
+- **Prompt**: "help me use this api with this headers to call for more results than 15"
+  - Criei um script JavaScript com `fetch`, ajustando `size` para mais resultados e usando o header `"x-domain": ".zapimoveis.com.br"`.
+- **Prompt**: "lets simplify it because i am not getting any results"
+  - Simplifiquei a URL, ajustando parâmetros e testando com um exemplo funcional.
+- **Prompt**: "lets simplify pagination by only changing the url using string templates"
+  - Refatorei para usar templates de string, alterando apenas `page` e `size`.
 
-2. **Prompt de Refinamento**: "A descrição pode conter HTML, ajuste o `data-description`."
+### Etapa 2: Extração de Dados e Filtro
 
-   - Adicionado `stripHtml` para limpar HTML na busca.
+- **Prompt**: "ok now i have a lot of options, can you help me select some houses based on my preferences"
+  - Solicitei preferências detalhadas do usuário para filtrar os resultados.
+- **Prompt**: "eu morava em uma casa na barra da lagoa..."
+  - Baseado nas preferências (e.g., 3 quartos, área verde, até 2M, sem norte da ilha), sugeri filtrar os 1000 elementos do JSON.
+- **Prompt**: "i have filtered the results, help me pretty print the results as a new webpage"
+  - Criei um script para gerar uma página HTML via Blob URL, exibindo cards com imagens (`crop/614x297`), links para Zap Imóveis e detalhes (preço, quartos, etc.).
 
-3. **Prompt de Design**: "Mova a busca para o fundo e ajuste os cards para 400-500px, centralizados."
+### Etapa 3: Melhorias na Interface
 
-   - Busca flutuante implementada e cards expandidos.
+- **Prompt**: "great, now when i click on the image, open a html dialog with all the images"
+  - Adicionei dialogs com todas as imagens, interface em português, highlights em palavras-chave na descrição e uma barra de busca.
+- **Prompt**: "just one more thing, make images lazy load since there are a ton of them"
+  - Implementei `loading="lazy"` e fallback para links do YouTube usando thumbnails.
+- **Prompt**: "adicione mais palavras com highlights"
+  - Expandi a lista de palavras destacadas (e.g., `árvore`, `quintal`, `luz natural`).
 
-4. **Prompt de Funcionalidade**: "Adicione um mapa com Leaflet."
+### Etapa 4: Otimização e Mapa
 
-   - Mapa integrado com marcadores e legenda.
+- **Prompt**: "ok, going back to this code, the generated page is very slow"
+  - Otimizei para 600+ elementos, removendo iframes do YouTube iniciais e ajustando a renderização.
+- **Prompt**: "ótimo, agora vamos adicionar mais uma funcionalidade"
+  - Adicionei um mapa flutuante com Leaflet, plotando pins via `lat` e `lon`, com dialogs ao clicar.
+- **Prompt**: "mudar o mapa"
+  - Refatorei para abas separadas ("Listagem" e "Mapa"), ajustando ícones por `unitTypes` e corrigindo zoom.
 
-5. **Prompt de Expansão**: "Crie abas para Listagem e Mapa, e ajuste a busca para ambas."
+### Etapa 5: Correções e Refatoração
 
-   - Sistema de abas e busca unificada.
+- **Prompt**: "dialog is not showing when i click on a pin"
+  - Corrigi erros como `Uncaught TypeError` e travamentos, reescrevendo a lógica do mapa.
+- **Prompt**: "can this code be rewritten"
+  - Transformei o script em uma página HTML que carrega `sorted.json` via fetch com CORS.
+- **Prompt**: "use apenas um elemento dialog"
+  - Refatorei para um único `<dialog>` reutilizável.
 
-6. **Prompt Final**: "Adicione uma aba Imagens com galeria e divida em arquivos."
-   - Aba "Imagens" adicionada, código separado em `index.html`, `styles.css`, `script.js`.
+### Etapa 6: Nova Página de Imagens
+
+- **Prompt**: "vamos criar outra página html"
+  - Criei uma página com títulos sticky, thumbnails (307x149px), busca e links para Zap Imóveis, lidando com HTML na descrição via `stripHtml`.
+- **Prompt**: "faça a caixa de pesquisar ser um item flutuante"
+  - Ajustei a busca para ficar flutuante na parte inferior em ambas as páginas.
+
+### Etapa 7: Ajustes Finais
+
+- **Prompt**: "faça os cards serem um pouquinho mais largos"
+  - Aumentei os cards para 400-500px, centralizei, alinhei a descrição à esquerda e destaquei o botão "Ver Imóvel".
+- **Prompt**: "agora que estou hospedando esse site"
+  - Dividi o código em `index.html`, `styles.css` e `script.js`, ajustando a busca para usar `p.description`.
+- **Prompt**: "faça a pagina que lista todas as imagens ser uma aba"
+  - Integração da galeria como aba "Imagens", unificando tudo em um único arquivo com três abas.
 
 ### Etapas do Processo
 
@@ -55,10 +97,3 @@ O projeto foi criado em etapas, com prompts que guiaram o Grok desde a concepç�
 - **Sistema de Abas**: Implementação de abas para "Listagem" e "Mapa", com busca unificada.
 - **Galeria de Imagens**: Inclusão da aba "Imagens" com thumbnails e títulos sticky.
 - **Finalização**: Separação do código em arquivos e geração de um README.
-
-## Como Usar
-
-1. Clone o repositório:
-   ```bash
-   git clone https://github.com/seu-usuario/seu-repositorio.git
-   ```
