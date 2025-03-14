@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Listagem de Imóveis Filtrados</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <nav class="tabs">
+      <button class="tab-button active" data-tab="tab-listing">Listagem</button>
+      <button class="tab-button" data-tab="tab-map">Mapa</button>
+    </nav>
+    <div id="tab-listing" class="tab-content active">
+      <div class="container" id="listingContainer"></div>
+    </div>
+    <div id="tab-map" class="tab-content">
+      <div id="map"></div>
+    </div>
+    <div class="search-bar">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Pesquisar na descrição..."
+      />
+    </div>
+    <dialog id="galleryDialog"></dialog>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script src="script.js"></script>
+  </body>
+</html>

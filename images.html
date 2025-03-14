@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Listagem Simples de Imóveis</title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background: linear-gradient(to bottom, #e0f7fa, #ffffff);
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+      }
+      .search-bar {
+        width: 100%;
+        padding: 10px 20px; /* Reduzido o padding vertical para ocupar menos espaço */
+        background-color: #fff;
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Sombra para cima */
+        position: fixed; /* Mudado de sticky para fixed */
+        bottom: 0; /* Posicionado na parte inferior */
+        left: 0;
+        z-index: 10;
+      }
+      .search-bar input {
+        width: 80%;
+        max-width: 500px;
+        padding: 10px;
+        font-size: 1em;
+        border: 2px solid #007bff;
+        border-radius: 5px;
+        margin: 0 auto;
+        display: block;
+      }
+      .container {
+        padding: 20px 20px 70px 20px; /* Adicionado padding-bottom para evitar sobreposição com a search-bar */
+      }
+      .listing {
+        margin-bottom: 40px;
+        padding: 10px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+      }
+      .listing:hover {
+        transform: translateY(-3px);
+      }
+      .listing-title {
+        font-size: 1.2em;
+        color: #2c3e50;
+        padding: 10px;
+        background-color: #fff;
+        border-radius: 5px 5px 0 0;
+        margin: 0;
+        cursor: pointer;
+        position: sticky;
+        top: 0; /* Agora no topo da tela, sem conflito com a search-bar */
+        z-index: 5;
+        transition: color 0.2s ease;
+      }
+      .listing-title:hover {
+        color: #007bff;
+      }
+      .listing-title.hidden {
+        display: none;
+      }
+      .image-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 10px;
+      }
+      .thumbnail {
+        width: 307px;
+        height: 149px;
+        object-fit: cover;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+      }
+      .thumbnail:hover {
+        transform: scale(1.05);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" id="listingContainer"></div>
+    <div class="search-bar">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Pesquisar na descrição..."
+      />
+    </div>
+
+    <script>
+      // Função para remover HTML e obter apenas o texto
+      function stripHtml(html) {
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = html;
+        return tempDiv.textContent || tempDiv.innerText || "";
+      }
+
+      fetch("sorted.json", {
+        method: "GET",
+        mode: "cors",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((filteredListings) => {
+          const container = document.getElementById("listingContainer");
+
+          // Generate listings
+          const listingsArray = filteredListings.map((result, index) => {
+            const fullLink = result.link
+              ? `https://www.zapimoveis.com.br${result.link}`
+              : "#";
+            const title = result.title || `Propriedade ${index + 1}`;
+            const rawDescription =
+              result.description || "Sem descrição disponível.";
+            const description = stripHtml(rawDescription).toLowerCase();
+
+            const imageUrls = (result.imageUrls || []).filter(
+              (url) => !url.includes("youtube.com") && !url.includes("youtu.be")
+            );
+            const thumbnails =
+              imageUrls.length > 0
+                ? imageUrls
+                    .map(
+                      (url) => `
+                        <img src="${url.replace(
+                          "{action}/{width}x{height}",
+                          "crop/614x297"
+                        )}" 
+                             alt="${title}" 
+                             class="thumbnail" 
+                             loading="lazy" 
+                             onclick="window.open('${fullLink}', '_blank')">
+                    `
+                    )
+                    .join("")
+                : "<span>Sem imagens</span>";
+
+            return `
+                    <div class="listing" data-description="${description}" data-index="${index}">
+                        <h2 class="listing-title" onclick="window.open('${fullLink}', '_blank')">${title}</h2>
+                        <div class="image-container">${thumbnails}</div>
+                    </div>
+                `;
+          });
+          container.innerHTML = listingsArray.join("");
+
+          // Search functionality
+          const searchInput = document.getElementById("searchInput");
+          if (!searchInput || !container) {
+            console.error("Search input or container not found");
+            return;
+          }
+          console.log("Search input found, attaching listener");
+          searchInput.addEventListener("input", () => {
+            const query = searchInput.value.toLowerCase();
+            console.log("Search query:", query);
+            const listings = container.querySelectorAll(".listing");
+            console.log("Found listings:", listings.length);
+
+            listings.forEach((listing) => {
+              const description = listing.getAttribute("data-description");
+              const isVisible = description.includes(query);
+              listing.style.display = isVisible ? "" : "none";
+            });
+          });
+
+          // Sticky title management with IntersectionObserver
+          const listings = document.querySelectorAll(".listing");
+          const observerOptions = {
+            root: null,
+            rootMargin:
+              "0px 0px -50px 0px" /* Ajustado para considerar a search-bar no fundo */,
+            threshold: [0, 0.1, 1],
+          };
+
+          const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+              const title = entry.target.querySelector(".listing-title");
+              if (entry.isIntersecting) {
+                title.classList.remove("hidden");
+              } else if (entry.boundingClientRect.top < 0) {
+                title.classList.add("hidden");
+              }
+            });
+          }, observerOptions);
+
+          listings.forEach((listing) => observer.observe(listing));
+        })
+        .catch((error) => console.error("Error fetching data:", error));
+    </script>
+  </body>
+</html>

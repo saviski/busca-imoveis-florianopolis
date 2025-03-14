@@ -1,0 +1,252 @@
+body {
+  font-family: "Arial", sans-serif;
+  background: linear-gradient(to bottom, #e0f7fa, #ffffff);
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.search-bar {
+  width: 100%;
+  padding: 10px 20px;
+  background-color: #fff;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 10;
+}
+
+.search-bar input {
+  width: 80%;
+  max-width: 500px;
+  padding: 10px;
+  font-size: 1em;
+  border: 2px solid #007bff;
+  border-radius: 5px;
+  margin: 0 auto;
+  display: block;
+}
+
+.tabs {
+  display: flex;
+  background-color: #f1f1f1;
+  border-bottom: 1px solid #ccc;
+}
+
+.tab-button {
+  flex: 1;
+  padding: 15px;
+  text-align: center;
+  cursor: pointer;
+  background-color: #f1f1f1;
+  border: none;
+  outline: none;
+  transition: background-color 0.3s;
+}
+
+.tab-button:hover {
+  background-color: #ddd;
+}
+
+.tab-button.active {
+  background-color: #fff;
+  border-bottom: 2px solid #007bff;
+}
+
+.tab-content {
+  flex: 1;
+  display: none;
+  overflow-y: auto;
+  padding-bottom: 70px;
+}
+
+.tab-content.active {
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+  flex: 1;
+  justify-content: center; /* Centraliza os cards */
+}
+
+.listing {
+  flex: 1;
+  flex-basis: 400px; /* Largura mínima maior */
+  max-width: 500px; /* Limite máximo maior */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  background-color: #fff;
+  transition: transform 0.3s ease;
+  box-sizing: border-box;
+}
+
+.listing:hover {
+  transform: translateY(-5px);
+}
+
+.listing-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.listing h2 {
+  font-size: 1.4em;
+  margin: 15px 0;
+  color: #2c3e50;
+}
+
+.listing p {
+  font-size: 1em;
+  color: #7f8c8d;
+  margin: 8px 0;
+}
+
+.listing .description {
+  text-align: left; /* Alinhado à esquerda */
+  /* Ou use text-align: justify; se preferir justificar */
+}
+
+.description .highlight {
+  background-color: #fff3cd;
+  padding: 2px 5px;
+  border-radius: 3px;
+  color: #856404;
+}
+
+.listing a {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 12px 20px;
+  background-color: #007bff;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.listing a:hover {
+  background-color: #0056b3;
+}
+
+.listing a.disabled {
+  background-color: #ccc;
+  pointer-events: none;
+}
+
+#galleryDialog {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  max-width: 80vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  background-color: #fff;
+  text-align: left;
+}
+
+.gallery-content img,
+.gallery-content iframe {
+  width: 100%;
+  max-width: 600px;
+  margin: 10px 0;
+  border-radius: 5px;
+}
+
+.gallery-content .youtube-placeholder {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  height: 315px;
+  margin: 10px 0;
+  background: #000 url("https://img.youtube.com/vi/{videoId}/hqdefault.jpg")
+    center/cover no-repeat;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.gallery-content .youtube-placeholder::after {
+  content: "▶";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 50px;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.gallery-content a {
+  display: inline-block;
+  margin: 15px 0;
+  padding: 15px 30px; /* Botão maior */
+  background-color: #28a745; /* Verde para destacar */
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 1.2em; /* Texto maior */
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.gallery-content a:hover {
+  background-color: #218838; /* Verde mais escuro no hover */
+}
+
+.close-btn {
+  position: sticky;
+  top: 10px;
+  right: 10px;
+  padding: 10px 20px;
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  float: right;
+}
+
+.close-btn:hover {
+  background-color: #c82333;
+}
+
+#map {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+}
+
+.legend {
+  position: absolute;
+  bottom: 80px;
+  left: 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 1000;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
+}
+
+.legend-color {
+  width: 15px;
+  height: 15px;
+  margin-right: 5px;
+  border-radius: 50%;
+}
