@@ -68,19 +68,20 @@ body {
   flex-direction: column;
 }
 
+/* Estilos da aba Listagem */
 .container {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
   padding: 20px;
   flex: 1;
-  justify-content: center; /* Centraliza os cards */
+  justify-content: center;
 }
 
 .listing {
   flex: 1;
-  flex-basis: 400px; /* Largura mínima maior */
-  max-width: 500px; /* Limite máximo maior */
+  flex-basis: 400px;
+  max-width: 500px;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
@@ -115,8 +116,7 @@ body {
 }
 
 .listing .description {
-  text-align: left; /* Alinhado à esquerda */
-  /* Ou use text-align: justify; se preferir justificar */
+  text-align: left;
 }
 
 .description .highlight {
@@ -145,6 +145,68 @@ body {
   pointer-events: none;
 }
 
+/* Estilos da aba Imagens */
+.images-container {
+  padding: 20px;
+  flex: 1;
+}
+
+.listing-images {
+  margin-bottom: 40px;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.listing-images:hover {
+  transform: translateY(-3px);
+}
+
+.listing-images .listing-title {
+  font-size: 1.2em;
+  color: #2c3e50;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 5px 5px 0 0;
+  margin: 0;
+  cursor: pointer;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  transition: color 0.2s ease;
+}
+
+.listing-images .listing-title:hover {
+  color: #007bff;
+}
+
+.listing-images .listing-title.hidden {
+  display: none;
+}
+
+.listing-images .image-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px;
+}
+
+.listing-images .thumbnail {
+  width: 307px;
+  height: 149px;
+  object-fit: cover;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.listing-images .thumbnail:hover {
+  transform: scale(1.05);
+}
+
+/* Estilos do Dialog */
 #galleryDialog {
   border: none;
   border-radius: 10px;
@@ -191,18 +253,18 @@ body {
 .gallery-content a {
   display: inline-block;
   margin: 15px 0;
-  padding: 15px 30px; /* Botão maior */
-  background-color: #28a745; /* Verde para destacar */
+  padding: 15px 30px;
+  background-color: #28a745;
   color: #fff;
   text-decoration: none;
   border-radius: 5px;
-  font-size: 1.2em; /* Texto maior */
+  font-size: 1.2em;
   font-weight: bold;
   transition: background-color 0.3s ease;
 }
 
 .gallery-content a:hover {
-  background-color: #218838; /* Verde mais escuro no hover */
+  background-color: #218838;
 }
 
 .close-btn {
@@ -222,6 +284,7 @@ body {
   background-color: #c82333;
 }
 
+/* Estilos do Mapa */
 #map {
   flex: 1;
   width: 100%;

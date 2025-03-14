@@ -28,6 +28,7 @@ fetch('sorted.json', {
 
     const dialog = document.getElementById('galleryDialog');
 
+    // Função para carregar galeria de imagens no dialog
     const loadImageGallery = (index) => {
       const result = filteredListings[index];
       if (!result) {
@@ -52,6 +53,7 @@ fetch('sorted.json', {
         `;
     };
 
+    // Função para carregar galeria completa no dialog
     const loadFullGallery = (index) => {
       const result = filteredListings[index];
       if (!result) {
@@ -95,6 +97,8 @@ fetch('sorted.json', {
         `;
     };
 
+    // Gerar conteúdo da aba Listagem
+    const listingContainer = document.getElementById('listingContainer');
     const listingsArray = [];
     filteredListings.forEach((result, index) => {
       let primaryImageUrl = '';
@@ -142,8 +146,37 @@ fetch('sorted.json', {
             </div>
         `);
     });
-    document.getElementById('listingContainer').innerHTML = listingsArray.join('');
+    listingContainer.innerHTML = listingsArray.join('');
 
+    // Gerar conteúdo da aba Imagens
+    const imagesContainer = document.getElementById('imagesContainer');
+    const imagesArray = filteredListings.map((result, index) => {
+      const fullLink = result.link ? `https://www.zapimoveis.com.br${result.link}` : '#';
+      const title = result.title || `Propriedade ${index + 1}`;
+      const description = result.description || 'Sem descrição disponível.';
+      const imageUrls = (result.imageUrls || []).filter(url =>
+        !url.includes('youtube.com') && !url.includes('youtu.be')
+      );
+      const thumbnails = imageUrls.length > 0
+        ? imageUrls.map(url => `
+                <img src="${url.replace('{action}/{width}x{height}', 'crop/614x297')}" 
+                     alt="${title}" 
+                     class="thumbnail" 
+                     loading="lazy" 
+                     onclick="window.open('${fullLink}', '_blank')">
+            `).join('')
+        : '<span>Sem imagens</span>';
+
+      return `
+            <div class="listing-images" data-description="${stripHtml(description).toLowerCase()}" data-index="${index}">
+                <h2 class="listing-title" onclick="window.open('${fullLink}', '_blank')">${title}</h2>
+                <div class="image-container">${thumbnails}</div>
+            </div>
+        `;
+    });
+    imagesContainer.innerHTML = imagesArray.join('');
+
+    // Gerenciar abas
     const tabButtons = document.querySelectorAll('.tab-button');
     const tabContents = document.querySelectorAll('.tab-content');
     tabButtons.forEach(button => {
@@ -160,6 +193,7 @@ fetch('sorted.json', {
       });
     });
 
+    // Configurar mapa
     const map = L.map('map', {
       center: [-23.5505, -46.6333],
       zoom: 10,
@@ -211,14 +245,8 @@ fetch('sorted.json', {
         marker.index = index;
         marker.on('click', () => {
           console.log('Marker clicked, index:', index);
-          console.log('Loading full gallery for index:', index);
           dialog.innerHTML = loadFullGallery(index);
-          console.log('Showing dialog for index:', index);
-          try {
-            dialog.showModal();
-          } catch (e) {
-            console.error('Error showing dialog:', e);
-          }
+          dialog.showModal();
         });
         markers.push(marker);
         markerLayer.addLayer(marker);
@@ -253,11 +281,31 @@ fetch('sorted.json', {
       }
     }
 
+    // Sticky title para aba Imagens
+    const listingsImages = document.querySelectorAll('.listing-images');
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px 0px -50px 0px',
+      threshold: [0, 0.1, 1]
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const title = entry.target.querySelector('.listing-title');
+        if (entry.isIntersecting) {
+          title.classList.remove('hidden');
+        } else if (entry.boundingClientRect.top < 0) {
+          title.classList.add('hidden');
+        }
+      });
+    }, observerOptions);
+
+    listingsImages.forEach(listing => observer.observe(listing));
+
+    // Eventos de clique
     document.getElementById('listingContainer').addEventListener('click', (e) => {
       if (e.target.classList.contains('listing-img')) {
         const index = parseInt(e.target.getAttribute('data-index'));
-        console.log('Image clicked with index:', index);
-        console.log('Loading image gallery for index:', index);
         dialog.innerHTML = loadImageGallery(index);
         dialog.showModal();
       }
@@ -271,19 +319,18 @@ fetch('sorted.json', {
       }
     });
 
+    // Busca unificada para todas as abas
     const searchInput = document.getElementById('searchInput');
-    const container = document.getElementById('listingContainer');
-    if (!searchInput || !container) {
-      console.error('Search input or container not found');
+    if (!searchInput || !listingContainer || !imagesContainer) {
+      console.error('Search input or containers not found');
       return;
     }
-    console.log('Search input found, attaching listener');
     searchInput.addEventListener('input', () => {
       const query = searchInput.value.toLowerCase();
       console.log('Search query:', query);
-      const listings = container.querySelectorAll('.listing');
-      console.log('Found listings:', listings.length);
 
+      // Filtrar Listagem
+      const listings = listingContainer.querySelectorAll('.listing');
       const visibleIndexes = new Set();
       listings.forEach(listing => {
         const descriptionElement = listing.querySelector('.description');
@@ -295,6 +342,18 @@ fetch('sorted.json', {
         }
       });
 
+      // Filtrar Imagens
+      const imageListings = imagesContainer.querySelectorAll('.listing-images');
+      imageListings.forEach(listing => {
+        const description = listing.getAttribute('data-description');
+        const isVisible = description.includes(query);
+        listing.style.display = isVisible ? '' : 'none';
+        if (isVisible) {
+          visibleIndexes.add(parseInt(listing.getAttribute('data-index')));
+        }
+      });
+
+      // Filtrar Mapa
       markers.forEach(marker => {
         if (visibleIndexes.has(marker.index)) {
           if (!map.hasLayer(marker)) markerLayer.addLayer(marker);
