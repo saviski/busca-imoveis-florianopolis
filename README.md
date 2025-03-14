@@ -101,6 +101,8 @@ O projeto evoluiu em várias etapas, detalhadas abaixo com base nos prompts forn
   - Corrigi o carregamento do mapa movendo a lógica de inicialização para fora do `innerHTML`, usando `setTimeout` após o dialog ser exibido.
 - **Prompt**: "faça esse mini mapa ter display: inline-block; tamano de 600x290px o logo do leaflet e openstreetmap dentro do mapa estao ocupando muito espaco, tem como fazer eles ficarem menos visiveis? o script do mapa ainda não esta sendo executado, o mapa não é carregado dentro do dialog"
   - Ajustei o mapa para 600x290px com `display: inline-block`, reduzi a visibilidade da atribuição do OpenStreetMap (fonte 8px, opacidade 0.5), e corrigi o carregamento com um `setTimeout` mais robusto após `showModal()`.
+- **Prompt**: "no mobile o mapa acaba ficando muito grande, entao ajustar o minimapa para não ser maior do que o espaço disponivel"
+  - Tornei o mini mapa responsivo com `max-width: 100%` e `aspect-ratio: 600 / 290` em mobile (telas < 768px), ajustando a altura proporcionalmente e usando `map.invalidateSize()` para corrigir a renderização.
 
 ### Etapas do Processo
 

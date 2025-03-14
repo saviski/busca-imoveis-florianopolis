@@ -316,8 +316,18 @@ body {
 
 .dialog-map {
   display: inline-block;
-  width: 600px;
-  height: 290px;
+  width: 600px; /* Tamanho padrão em desktop */
+  height: 290px; /* Tamanho padrão em desktop */
+  max-width: 100%; /* Não ultrapassa a largura disponível */
   margin: 10px 0;
   border-radius: 5px;
+}
+
+/* Media query para dispositivos móveis */
+@media (max-width: 768px) {
+  .dialog-map {
+    width: 100%; /* Ocupa toda a largura disponível */
+    height: auto; /* Mantém proporção, mas ajustaremos via JS */
+    aspect-ratio: 600 / 290; /* Mantém proporção 600x290 */
+  }
 }
