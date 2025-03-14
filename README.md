@@ -1,3 +1,7 @@
+# Live version
+
+[imoveis.saviski.web](https://imoveis.saviski.web).
+
 # Listagem de Imóveis com Mapa e Galeria de Imagens
 
 Este projeto é uma aplicação web interativa que exibe imóveis com uma listagem detalhada, um mapa e uma galeria de imagens, criada inteiramente no Grok, uma IA desenvolvida pela xAI. Todo o código foi gerado e refinado por meio de prompts interativos em uma única conversa, disponível aqui: [Conversa no Grok](https://grok.com/share/bGVnYWN5_41982680-4854-4db8-99f7-2fe317f0ee90).
